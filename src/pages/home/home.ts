@@ -1,20 +1,63 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {NavController} from "ionic-angular";
 import {DataPointsService} from "../../app/data.service";
+import {DataPoint} from "../../app/dataPoint";
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
-  constructor(public navCtrl: NavController, private dpService: DataPointsService) {
+  private dataPoints: DataPoint[];
+  private errorMessage: string;
+  private code: string = '';
+  private temp: number = 0;
+
+  constructor(public navCtrl: NavController, private dataPointsService: DataPointsService) {
 
   }
 
+  ngOnInit(): void {
+    this.freshAll();
+  }
+
+  freshAll(): void {
+    this.dataPointsService.getDataPoints()
+      .subscribe(
+        data => {
+          this.dataPoints = data;
+          this.code = data[0].code;
+          this.temp = data[0].temperature;
+          console.log(this.dataPoints);
+        },
+        error => {
+          this.errorMessage = <any>error;
+          console.error('oops' + this.errorMessage);
+        },
+        () => {
+          console.log('End of lifecycle')
+        })
+  }
+
+
   onClick(): void {
-    this.dpService.getAll();
-    console.log(this.dpService.getDataPoints());
+    // this.freshAll();
+    this.temp = 0;
+    this._increaseProgress(() => this.temp = 999);
+  }
+
+  _increaseProgress(doneCallback: () => void) {
+    this.temp += 1;
+    console.log(`Current progress: ${this.temp}%`);
+
+    if (this.temp < 100) {
+      window.setTimeout(() => {
+        this._increaseProgress(doneCallback);
+      }, 10);
+    } else {
+      doneCallback();
+    }
   }
 
 }
