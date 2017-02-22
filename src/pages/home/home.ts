@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {NavController} from "ionic-angular";
 import {DataPointsService} from "../../app/data.service";
 import {DataPoint} from "../../app/dataPoint";
+import * as d3 from "d3";
 
 @Component({
   selector: 'page-home',
@@ -20,6 +21,7 @@ export class HomePage implements OnInit {
 
   ngOnInit(): void {
     this.freshAll();
+    d3.selectAll("p").style("color", "blue");
   }
 
   freshAll(): void {
