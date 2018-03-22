@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
-// ReactDOM.render(<App />, document.getElementById('root'));
-// registerServiceWorker();
-
+import Clock from './Clock';
 
 function Welcome(props) {
     return <h1>Hello, {props.name}</h1>;
@@ -14,18 +11,18 @@ function formatDate(date) {
     return date.toLocaleDateString();
 }
 
+function Avatar(props) {
+    return (
+        <img className="Avatar"
+             src={props.user.avatarUrl}
+             alt={props.user.name}
+        />);
+}
+
 function Comment(props) {
     return (
         <div className="Comment">
-            <div className="UserInfo">
-                <img className="Avatar"
-                     src={props.author.avatarUrl}
-                     alt={props.author.name}
-                />
-                <div className="UserInfo-name">
-                    {props.author.name}
-                </div>
-            </div>
+            <UserInfo author={props.author}/>
             <div className="Comment-text">
                 {props.text}
             </div>
@@ -36,9 +33,19 @@ function Comment(props) {
     );
 }
 
-function App1() {
+function UserInfo(props) {
+    return (<div className="UserInfo">
+        <Avatar user={props.author}/>
+        <div className="UserInfo-name">
+            {props.author.name}
+        </div>
+    </div>);
+}
+
+function App() {
     return (
         <div>
+            <Clock/>
             <Welcome name="nian"/>
             <Welcome name="yuxin"/>
             <Comment date={comment.date} text={comment.text} author={comment.author}/>
@@ -55,8 +62,11 @@ const comment = {
     }
 }
 
-// const element = <Welcome name="Sara" />;
-ReactDOM.render(
-    <App1/>,
-    document.getElementById('root')
-);
+function tick() {
+    ReactDOM.render(
+        <App/>,
+        document.getElementById('root')
+    );
+}
+
+setInterval(tick, 1000);
