@@ -15,13 +15,66 @@ export class HomePage implements OnInit {
   private code: string = '';
   private temp: number = 0;
 
+  private state: boolean = false;
+
   constructor(public navCtrl: NavController, private dataPointsService: DataPointsService) {
 
   }
 
   ngOnInit(): void {
     this.freshAll();
-    d3.selectAll("p").style("color", "blue");
+
+    let data = [{slot: 1, temp: 50}, {slot: 2, temp: 150}, {slot: 3, temp: 100}];
+
+    let container = document.getElementById("canvas");
+    let svg = d3.select(container).append("svg");
+    let margin = {top: 5, right: 5, bottom: 5, left: 5};
+
+    let width = container.clientWidth;
+    let height = container.clientHeight;
+
+    console.log('width = ' + width);
+    console.log('height = ' + height);
+
+    svg.attr("width", width - margin.left - margin.right)
+      .attr("height", height - margin.top - margin.bottom)
+      .style("background-color", "white");
+
+    let xScale = d3.scaleLinear()
+      .range([0, width])
+      .domain(d3.extent(data, function (d) {
+        return d.slot
+      }));
+
+    let yScale = d3.scaleLinear()
+      .range([0, height])
+      .domain([0, d3.max(data, function (d) {
+        return d.temp;
+      })]);
+
+    let line = d3.line()
+        .x(function(d) {return xScale(d.slot);})
+        .y(function(d) {
+          console.log(yScale(d.temp));
+          return yScale(d.temp);});
+
+
+    svg.append("path")
+      .data([data])
+      .attr("d", line)
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2)
+      .attr("fill", "none")
+    ;
+
+    svg.selectAll("rect")
+      .data(data)
+      .enter().append("rect")
+      .attr("x", function(d) {return d.slot})
+      .attr("y", function(d) {return d.temp})
+      .attr("width", 20)
+      .attr("height", function(d){return yScale(d.temp);})
+    ;
   }
 
   freshAll(): void {
@@ -44,6 +97,18 @@ export class HomePage implements OnInit {
 
 
   onClick(): void {
+    if (this.state) {
+      d3.select("ion-content").transition().style("background-color", "blue");
+    } else {
+      d3.select("ion-content").transition()
+        .delay(750)
+        .styleTween("background-color", function () {
+          return d3.interpolate("green", "red");
+        })
+        .duration(5000)
+      ;
+    }
+    this.state = !this.state;
     // this.freshAll();
     this.temp = 0;
     this._increaseProgress(() => this.temp = 999);

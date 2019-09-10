@@ -1,11 +1,11 @@
 export class DataPoint {
   code: string;
   kiln: string;
-  slot: number;
+  // slot: number;
   position: string;
-  maxTemperature: number;
-  minTemperature: number;
+  // maxTemperature: number;
+  // minTemperature: number;
   temperature: number;
-  moduleId: number;
-  channelId: number;
+  // moduleId: number;
+  // channelId: number;
 }

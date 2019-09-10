@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
-import {Http, Response} from "@angular/http";
+import {Http, Response, Headers} from "@angular/http";
 import {DataPoint} from "./dataPoint";
-import "./rxjs-operators";
+// import "./rxjs-operators";
 import {Observable} from "rxjs";
 
 @Injectable()
 export class DataPointsService {
-  // private headers = new Headers({'Content-Type': 'application/json'});
+  private headers = new Headers({'Content-Type': 'application/json'});
   private url = 'http://192.168.2.3:8080/datapoints';
 
   constructor(private http: Http) {
@@ -35,5 +35,12 @@ export class DataPointsService {
     }
     console.error(errMsg);
     return Observable.throw(errMsg);
+  }
+
+  getTestDataPoints(): DataPoint[] {
+    return [
+      {code: "", kiln: "", position: "", temperature: 1},
+      {code: "", kiln: "", position: "", temperature: 2}
+    ];
   }
 }
